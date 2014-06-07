@@ -1,0 +1,11 @@
+--- xfce4-settings-4.10.1/xfsettingsd/pointers.c	2013-05-06 01:12:54.000000000 +0900
++++ xfce4-settings-4.10.1.new/xfsettingsd/pointers.c	2014-05-25 17:13:14.029120187 +0900
+@@ -220,7 +220,7 @@
+     Atom        *props;
+     gint         i, nprops;
+     gboolean     have_synaptics = FALSE;
+-    gchar       *args[] = { "syndaemon", "-i", "2.0", "-K", "-R", NULL };
++    gchar       *args[] = { "syndaemon", "-i", "0.2", "-K", "-R", NULL };
+     GError      *error = NULL;
+ 
+     /* only stop a running daemon */

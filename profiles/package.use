@@ -1,0 +1,7 @@
+pantheon-base/pantheon-shell lightdm screensaver
+x11-misc/lightdm pantheon
+#x11-wm/gala -mutter38
+x11-themes/elementary-theme dark
+gnome-extra/evolution-data-server -weather
+x11-wm/gala mutter38
+gnome-base/gnome-settings-daemon -smartcard
