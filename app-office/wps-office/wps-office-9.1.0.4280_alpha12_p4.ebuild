@@ -107,6 +107,10 @@ src_install() {
 	fperms 0755 /opt/kingsoft/wps-office/office6/{wps,wpp,et}
 }
 
+pkg_preinst() {
+	gnome2_icon_savelist
+}
+
 pkg_postinst() {
 	use sharedfonts && font_pkg_postinst
 	gnome2_icon_cache_update
@@ -121,4 +125,5 @@ pkg_postinst() {
 
 pkg_postrm() {
 	fdo-mime_desktop_database_update
+	gnome2_icon_cache_update
 }

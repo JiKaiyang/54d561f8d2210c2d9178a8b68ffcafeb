@@ -4,7 +4,7 @@
 
 EAPI="3"
 
-inherit eutils autotools versionator git-2
+inherit eutils autotools versionator git-2 gnome2-utils
 
 DESCRIPTION="An OSD lyric show supporting multiple media players and downloading."
 EGIT_REPO_URI="http://github.com/tigersoldier/${PN}.git"
@@ -53,4 +53,16 @@ src_configure() {
 src_install() {
 	emake DESTDIR="${D}" install || die "Install failed"
 	dodoc AUTHORS ChangeLog NEWS* README*
+}
+
+pkg_preinst() {
+	gnome2_icon_savelist
+}
+
+pkg_postinst() {
+	gnome2_icon_cache_update
+}
+
+pkg_postrm() {
+	gnome2_icon_cache_update
 }
