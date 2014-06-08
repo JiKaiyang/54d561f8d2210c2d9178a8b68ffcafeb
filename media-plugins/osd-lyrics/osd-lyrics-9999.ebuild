@@ -4,19 +4,27 @@
 
 EAPI="3"
 
-TAR_SUFFIX=tar.gz
-
-inherit eutils autotools versionator
-
-MY_PN=osdlyrics
-MY_P=${MY_PN}-${PV}
-S=${WORKDIR}/${MY_P}
+inherit eutils autotools versionator git-2
 
 DESCRIPTION="An OSD lyric show supporting multiple media players and downloading."
-SRC_URI="http://${PN}.googlecode.com/files/${MY_P}.${TAR_SUFFIX}"
+EGIT_REPO_URI="http://github.com/tigersoldier/${PN}.git"
+SRC_URI=""
+
+if [ "${PV##*.}" = "9999" ]; then
+	EGIT_BRANCH="develop"
+else
+	EGIT_COMMIT="4e55d088c9306d2d6cd8"
+fi
+
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+
+if [ "${PV##*.}" = "9999" ]; then
+	KEYWORDS=""
+else
+	KEYWORDS="~amd64 ~x86"
+fi
+
 IUSE="mpd xmms2"
 
 RDEPEND="
@@ -27,6 +35,10 @@ RDEPEND="
 	mpd? ( media-libs/libmpd )
 	xmms2? ( media-sound/xmms2 )"
 DEPEND="${RDEPEND}"
+
+src_prepare() {
+	eautoreconf
+}
 
 use_disable() {
 	use $1 || echo "--disable-$1"
