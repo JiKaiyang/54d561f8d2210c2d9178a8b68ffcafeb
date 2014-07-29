@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=utorrent
+Type=Application
+Comment=utorrent server
+Terminal=true
+Exec=utserver -configfile "utserver.conf" -logfile "utserver.log" 
+Icon=utorrent
+Categories=Network;
+GenericName=utorrent server

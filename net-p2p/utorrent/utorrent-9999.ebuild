@@ -4,6 +4,8 @@
 
 EAPI=4
 
+inherit eutils
+
 DESCRIPTION="utorrent server for linux"
 HOMEPAGE="http://www.utorrent.com/"
 SRC_URI="file:///usr/portage/distfiles/utserver.tar.gz"
@@ -20,4 +22,19 @@ src_unpack(){
 src_install(){
 	dodir /opt
 	cp -R "${S}/" "${D}/opt/utorrent-server" || die "Install failed!"
+	cp "${FILESDIR}/utserver.conf" "${D}/opt/utorrent-server" || die "Install failed!"
+#	chmod 775 "${D}/opt/utorrent-server"
+#	chown -R root:users "${D}/opt/utorrent-server"
+	dodir /opt/bin
+	cat <<EOF >> ${D}/opt/bin/utserver
+#!/bin/sh
+echo using config: \$@
+mkdir -p ~/.utorrent
+cd ~/.utorrent
+[[ -e "utserver.conf" ]] || cp /opt/utorrent-server/utserver.conf .
+/opt/utorrent-server/utserver \$@
+EOF
+	fperms 0755 /opt/bin/utserver
+	doicon -s 256 ${FILESDIR}/${PN}.png
+	domenu ${FILESDIR}/${PN}.desktop
 }
