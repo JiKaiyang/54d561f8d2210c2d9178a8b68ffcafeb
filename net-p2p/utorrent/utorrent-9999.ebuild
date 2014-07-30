@@ -31,8 +31,9 @@ src_install(){
 echo using config: \$@
 mkdir -p ~/.utorrent
 cd ~/.utorrent
-[[ -e "utserver.conf" ]] || cp /opt/utorrent-server/utserver.conf .
-/opt/utorrent-server/utserver \$@
+[[ -e "utserver.conf" ]] && cp /opt/utorrent-server/utserver.conf
+[[ -e "webgui.zip" ]] && cp /opt/utorrent-server/webgui.zip
+./utserver -settingspath . \$@
 EOF
 	fperms 0755 /opt/bin/utserver
 	doicon -s 256 ${FILESDIR}/${PN}.png
