@@ -17,7 +17,7 @@ IUSE=""
 
 DEPEND=""
 RDEPEND="${DEPEND}
-	pantheon-base/plank"
+	x11-misc/plank"
 
 DOCS=( COPYING )
 
