@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name>local</name>
+    <description>personal use, many bugs, updated only when needed</description>
+    <homepage>None</homepage>
+    <owner type="project">
+      <name>local</name>
+    </owner>
+    <source type="git">git://github.com/JiKaiyang/54d561f8d2210c2d9178a8b68ffcafeb.git</source>
+  </repo>
+</repositories>
