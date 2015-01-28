@@ -12,7 +12,7 @@ SRC_URI=""
 LICENSE=""
 SLOT="0/1"
 KEYWORDS="alpha amd64 arm arm64 hppa ia64 m68k ~mips ppc ppc64 s390 sh sparc x86"
-IUSE="static-libs systemd"
+IUSE="+static-libs systemd"
 
 DEPEND=""
 RDEPEND="
@@ -26,4 +26,4 @@ RDEPEND="
 		>=sys-apps/systemd-208:0/0[${MULTILIB_USEDEP}] )
 	)"
 
-REQUIRED_USE="systemd? ( !static-libs )"
+#REQUIRED_USE="systemd? ( !static-libs )"
