@@ -32,6 +32,7 @@ src_compile() {
 src_install() {
 	insinto /usr/share/glib-2.0/schemas/
 	doins ${P}.gschema.override
+	doins dpms/org.pantheon.dpms.gschema.xml
 
 	insinto /etc/xdg/midori/
 	doins -r midori/config
