@@ -1,11 +1,11 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/net-wireless/blueman/blueman-1.23_p20140717-r1.ebuild,v 1.3 2014/08/10 20:34:24 slyfox Exp $
+# $Header: /var/cvsroot/gentoo-x86/net-wireless/blueman/blueman-1.98_p20150105.ebuild,v 1.1 2015/01/05 19:50:38 zerochaos Exp $
 
 EAPI="5"
 
 PYTHON_COMPAT=( python2_7 )
-inherit eutils python-single-r1 gnome2-utils autotools
+inherit eutils python-single-r1 gnome2-utils autotools versionator
 
 DESCRIPTION="GTK+ Bluetooth Manager, designed to be simple and intuitive for everyday bluetooth tasks"
 HOMEPAGE="http://blueman-project.org/"
@@ -15,24 +15,20 @@ if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="https://github.com/${PN}-project/${PN}.git"
 	KEYWORDS=""
 else
-	#SRC_URI="http://download.tuxfamily.org/${PN}/${P}.tar.gz"
-	SRC_URI="https://dev.gentoo.org/~zerochaos/distfiles/${P}.tar.xz"
+	SRC_URI="https://github.com/blueman-project/${PN}/archive/$(replace_all_version_separators '-')-stable.zip"
+	echo ${SRC_URI}
 	KEYWORDS="~amd64 ~ppc ~x86"
 fi
 
 LICENSE="GPL-3"
 SLOT="0"
-IUSE="gconf sendto network nls policykit pulseaudio"
+IUSE="gconf gnome network nls policykit pulseaudio thunar"
 
 CDEPEND="dev-libs/glib:2=
 	x11-libs/gtk+:3=
 	x11-libs/startup-notification:=
 	dev-python/dbus-python[${PYTHON_USEDEP}]
-	|| (
-		dev-python/pygobject:2
-		dev-python/pygobject:3
-	)
-	x11-libs/libnotify[introspection]
+	dev-python/pygobject:3
 	>=net-wireless/bluez-4.61:=
 	${PYTHON_DEPS}"
 DEPEND="${CDEPEND}
@@ -44,15 +40,24 @@ RDEPEND="${CDEPEND}
 	sys-apps/dbus
 	x11-themes/hicolor-icon-theme
 	gconf? ( dev-python/gconf-python[${PYTHON_USEDEP}] )
-	sendto? ( gnome-base/nautilus )
+	gnome? ( gnome-base/nautilus )
 	network? ( || ( net-dns/dnsmasq
-		=net-misc/dhcp-3*
+		net-misc/dhcp
 		>=net-misc/networkmanager-0.8 ) )
 	policykit? ( sys-auth/polkit )
 	pulseaudio? ( media-sound/pulseaudio )
-	!net-wireless/gnome-bluetooth"
+	!net-wireless/gnome-bluetooth
+	x11-themes/gnome-icon-theme
+	thunar? ( xfce-base/thunar )
+"
+# See bug 455320 and https://github.com/blueman-project/blueman/issues/112 for reason for gnome-icon-theme dep
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+
+src_unpack() {
+	unpack ${A}
+	mv "${WORKDIR}/${PN}-$(replace_all_version_separators '-')-stable" ${S}
+}
 
 src_prepare() {
 	sed -i \
@@ -60,8 +65,7 @@ src_prepare() {
 		data/blueman-manager.desktop.in || die "sed failed"
 
 	epatch \
-		"${FILESDIR}/${PN}-9999-plugins-conf-file.patch" \
-		"${FILESDIR}/${PN}-9999-set-codeset-for-gettext-to-UTF-8-always.patch"
+		"${FILESDIR}/${PN}-set-codeset-for-gettext-to-UTF-8-always.patch"
 	eautoreconf
 }
 
@@ -69,9 +73,9 @@ src_configure() {
 	econf \
 		--disable-static \
 		$(use_enable policykit polkit) \
-		$(use_enable sendto) \
-		--disable-hal \
-		$(use_enable nls)
+		$(use_enable gnome nautilus-sendto) \
+		$(use_enable nls) \
+		$(use_enable thunar thunar-sendto)
 }
 
 src_install() {
@@ -80,10 +84,10 @@ src_install() {
 	python_fix_shebang "${D}"
 
 	rm "${D}"/$(python_get_sitedir)/*.la || die
-	use sendto && { rm "${D}"/usr/lib*/nautilus-sendto/plugins/*.la || die; }
+	use gnome && { rm "${D}"/usr/lib*/nautilus-sendto/plugins/*.la || die; }
 
 	# Note: Python 3 support would need __pycache__ file removal too
-	use gconf || { rm "${D}"/$(python_get_sitedir)/${PN}/plugins/config/Gconf.py* || die; }
+	#use gconf || { rm "${D}"/$(python_get_sitedir)/${PN}/plugins/config/Gconf.py* || die; }
 	use policykit || { rm -rf "${D}"/usr/share/polkit-1 || die; }
 	use pulseaudio || { rm "${D}"/$(python_get_sitedir)/${PN}/{main/Pulse*.py*,plugins/manager/Pulse*.py*} || die; }
 }
@@ -94,8 +98,10 @@ pkg_preinst() {
 
 pkg_postinst() {
 	gnome2_icon_cache_update
+	gnome2_schemas_update
 }
 
 pkg_postrm() {
 	gnome2_icon_cache_update
+	gnome2_schemas_update
 }

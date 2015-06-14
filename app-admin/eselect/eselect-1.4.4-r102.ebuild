@@ -33,7 +33,7 @@ PDEPEND="emacs? ( app-emacs/eselect-mode )
 	vim-syntax? ( app-vim/eselect-syntax )"
 
 src_prepare() {
-	epatch "${FILESDIR}"/${PN}-1.4.2-alternatives.patch
+	epatch "${FILESDIR}"/${P}-alternatives.patch
 	AT_M4DIR="." eautoreconf
 }
 
@@ -61,7 +61,7 @@ src_install() {
 	doins $FILESDIR/kernel.eselect || die
 	# band aid for prefix
 	if use prefix; then
-		cd "${ED}"/usr/share/eselect/libs
+		cd "${ED}"/usr/share/eselect/libs || die
 		sed -i "s:ALTERNATIVESDIR_ROOTLESS=\"${EPREFIX}:ALTERNATIVESDIR_ROOTLESS=\":" alternatives.bash || die
 	fi
 }
